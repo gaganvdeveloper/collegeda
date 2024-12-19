@@ -142,13 +142,19 @@ public class UserServiceImpl implements UserService {
 		User user = optional.get();
 		if(otp!=user.getOtp())
 			throw new RuntimeException("Invalid OTP unable to verify the OTP");
-			
 		user.setStatus(UserStatus.ACTIVE);
-		
 		user = userDao.saveUser(user);
-		
-		
 		return ResponseEntity.status(HttpStatus.OK).body(ResponseStructure.builder().status(HttpStatus.OK.value()).message("OTP Verified Successfully").body(user).build());
 	}
 
+	@Override
+	public ResponseEntity<?> findUserByEmail(String email) {
+		Optional<User> optional =  userDao.findUserByEmail(email);
+		if(optional.isEmpty())
+			throw new RuntimeException("Invalid Email id No Matching User Found");
+		User user = optional.get();
+		return ResponseEntity.status(HttpStatus.OK).body(ResponseStructure.builder().status(HttpStatus.OK.value()).message("User Found Successfully").body(user).build());
+	}
+	
+	
 }
